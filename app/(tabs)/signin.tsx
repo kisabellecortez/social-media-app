@@ -10,6 +10,8 @@ import {
     Image
 } from "react-native";
 
+import {signIn} from "aws-amplify/auth"
+
 export default function SignInScreen(){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -18,7 +20,12 @@ export default function SignInScreen(){
 
     const handleLogin = async() => {
         try{
-            console.log(username, " is logged in")
+            const result = await signIn({
+                username: username,
+                password
+            })
+
+            console.log(result)
         }
         catch(error){
             console.log(error)
