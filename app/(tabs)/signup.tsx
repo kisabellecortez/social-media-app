@@ -1,4 +1,6 @@
-import {useState} from "react"
+import {useState} from "react";
+
+// import {Auth} from "aws-amplify";
 
 import {
     View, 
@@ -6,7 +8,8 @@ import {
     TextInput,
     TouchableOpacity, 
     StyleSheet,
-    Button
+    Button, 
+    Image
 } from "react-native";
 
 export default function SignUpScreen(){
@@ -15,13 +18,19 @@ export default function SignUpScreen(){
     const [name, setName] = useState("")
     const [username, setUsername] = useState("")
 
+    const [passwordVisible, setPasswordVisible] = useState(false)
+
     const handleCreateAccount = async() => {
         try{
-
+            console.log("User created: ", username)
         }
         catch(error){
-            
+            console.log(error)
         }
+    }
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible)
     }
 
     return(
@@ -34,15 +43,37 @@ export default function SignUpScreen(){
                 onChangeText={setEmail}
                 style={styles.input}
                 autoCapitalize="none"
+                keyboardType="email-address"
+                textContentType="emailAddress"
             />
 
-            <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-                autoCapitalize="none"
-            />
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.inputWithImg}
+                    autoCapitalize="none"
+                    secureTextEntry={passwordVisible}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility}
+                        style={{
+                        position: "absolute",
+                        right: 10,
+                        top: "50%",
+                        transform: [{ translateY: -15 }]
+                    }}
+                >
+                    <Image
+                        source={
+                            passwordVisible
+                                ? require('@/assets/images/visible.svg')
+                                : require('@/assets/images/invisible.svg')
+                        }
+                        style={styles.visibilityImg}
+                    />
+                </TouchableOpacity>
+            </View>
 
             <TextInput
                 placeholder="Full Name"
@@ -60,8 +91,9 @@ export default function SignUpScreen(){
                 autoCapitalize="none"
             />
 
-            <Button
-                onPress={createAccount}
+            <Button 
+                title="Continue" 
+                onPress={handleCreateAccount}
             />
         </View>
     )
@@ -87,12 +119,30 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#007AFF",
-        padding: 15, 
+        padding: 12, 
+        marginBottom: 15, 
         borderRadius: 8
     },
     buttonText: {
         color: "#fff", 
         textAlign: "center",
         fontWeight: "bold"
-    }
+    },
+    visibilityImg: {
+        width: 20,
+        height: 20,
+        position: "absolute",
+        right: 10
+    },
+    inputContainer: {
+        position: "relative", 
+        justifyContent: "center"
+    },
+    inputWithImg: {
+        borderWidth: 1, 
+        borderColor: "#ccc", 
+        padding: 12, 
+        marginBottom: 15, 
+        borderRadius: 8
+    },
 });

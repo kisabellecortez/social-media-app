@@ -5,20 +5,28 @@ import {
     Text,
     TextInput,
     TouchableOpacity, 
-    StyleSheet
+    StyleSheet,
+    Button,
+    Image
 } from "react-native";
 
 export default function SignInScreen(){
-    const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+
+    const [passwordVisible, setPasswordVisible] = useState(false)
 
     const handleLogin = async() => {
         try{
-
+            console.log(username, " is logged in")
         }
         catch(error){
-            
+            console.log(error)
         }
+    }
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible)
     }
 
     return(
@@ -27,24 +35,49 @@ export default function SignInScreen(){
 
             <TextInput
                 placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
+                value={username}
+                onChangeText={setUsername}
                 style={styles.input}
                 autoCapitalize="none"
             />
 
-            <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-                autoCapitalize="none"
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.inputWithImg}
+                    autoCapitalize="none"
+                    secureTextEntry={passwordVisible}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility}
+                        style={{
+                        position: "absolute",
+                        right: 10,
+                        top: "50%",
+                        transform: [{ translateY: -15 }]
+                    }}
+                >
+                    <Image
+                        source={
+                            passwordVisible
+                                ? require('@/assets/images/visible.svg')
+                                : require('@/assets/images/invisible.svg')
+                        }
+                        style={styles.visibilityImg}
+                    />
+                </TouchableOpacity>
+            </View>
+
+            <Button 
+                title="Log In" 
+                onPress={handleLogin}
             />
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({  
     container: {
         flex: 1, 
         justifyContent: "center", 
@@ -64,12 +97,30 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#007AFF",
-        padding: 15, 
+        padding: 12, 
+        marginBottom: 15, 
         borderRadius: 8
     },
     buttonText: {
         color: "#fff", 
         textAlign: "center",
         fontWeight: "bold"
-    }
+    },
+    visibilityImg: {
+        width: 20,
+        height: 20,
+        position: "absolute",
+        right: 10
+    },
+    inputContainer: {
+        position: "relative", 
+        justifyContent: "center"
+    },
+    inputWithImg: {
+        borderWidth: 1, 
+        borderColor: "#ccc", 
+        padding: 12, 
+        marginBottom: 15, 
+        borderRadius: 8
+    },
 });
