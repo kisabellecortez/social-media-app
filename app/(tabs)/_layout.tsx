@@ -1,6 +1,14 @@
 import { Tabs } from 'expo-router';
 import React, {useEffect, useState} from 'react';
-
+import {
+    View, 
+    Text,
+    TextInput,
+    TouchableOpacity, 
+    StyleSheet,
+    Button, 
+    Image
+} from "react-native";
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
@@ -18,6 +26,15 @@ if(!cognitoConfigured){
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [userSignedIn, setUserSignedIn] = useState(false)
+
+  useEffect(() => {
+    const checkUser = async() => {
+      setUserSignedIn(true)
+    }
+
+    checkUser();
+  }, [])
 
   return(
       <Tabs
@@ -25,35 +42,64 @@ export default function TabLayout() {
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           headerShown: false,
           tabBarButton: HapticTab,
+          tabBarShowLabel: false
         }}>
         <Tabs.Screen
-          name="index"
+          name="userHome"
           options={{
-            title: 'Home',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+            tabBarIcon: ({focused}) => (
+              <Image
+                source={
+                  require('../../assets/images/home.svg')
+                }
+
+                style={{width: 24, height: 24}}
+              />
+            ),
           }}
         />
         <Tabs.Screen
-          name="explore"
+          name="userMessages"
           options={{
-            title: 'Explore',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+            tabBarIcon: ({focused}) => (
+              <Image
+                source={
+                  require('../../assets/images/message.svg')
+                }
+
+                style={{width: 24, height: 24}}
+              />
+            ),
           }}
         />
         <Tabs.Screen
-          name="signin"
+          name="userExplore"
           options={{
-            title: 'Explore',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+            tabBarIcon: ({focused}) => (
+              <Image
+                source={
+                  require('../../assets/images/search.svg')
+                }
+
+                style={{width: 24, height: 24}}
+              />
+            ),
           }}
         />
         <Tabs.Screen
-          name="signup"
+          name="userAccount"
           options={{
-            title: 'Sign Up',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+            tabBarIcon: ({focused}) => (
+              <Image
+                source={
+                  require('../../assets/images/user.svg')
+                }
+
+                style={{width: 24, height: 24}}
+              />
+            ),
           }}
         />
       </Tabs>
-    )
+  )
 }
