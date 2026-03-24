@@ -8,34 +8,36 @@ import {
     Button, 
     Image
 } from "react-native";
-import {getCurrentUser, signIn, signUp, confirmSignUp} from "aws-amplify/auth"
+import {signIn, signUp, confirmSignUp} from "aws-amplify/auth"
+import {useRouter} from "expo-router"
 
 export default function SignUpScreen(){
+    const router = useRouter()
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
     const [username, setUsername] = useState("")
-    const [code, setCode] = useState('')
     const [passwordVisible, setPasswordVisible] = useState(true)
     const [error, setError] = useState("")
-    const [sentConfirmationCode, setSentConfirmationCode] = useState(false)
 
     const handleCreateAccount = async() => {
         try{
             const result = await signUp({
-                username: username, 
-                password,
+                username: email, 
+                password: password,
                 options: {
                     userAttributes: {
-                        email: email,
-                        name: name
+                        email: email, 
+                        name: name, 
+                        nickname: username
                     }
                 }
             })
 
             console.log(result)
             
-            setSentConfirmationCode(true)
+            router.replace({pathname: "/(tabs)/confirmAccount", params: {email, password}})
         }
         catch(error: any){
             console.log(error)
@@ -62,37 +64,11 @@ export default function SignUpScreen(){
         }
     }
 
-    const handleConfirmSignUp = async() => {
-        try{
-            try{
-                const result = await confirmSignUp({
-                    username, 
-                    confirmationCode: code
-                })
-                
-                console.log(result)
-            }
-            catch(error){
-                console.log(error)
-            }
-
-            const user = await signIn({
-                username, 
-                password
-            })
-            
-            console.log("user logged in: ", user)
-        }
-        catch(error){
-            console.log(error)
-        }
-    }
-
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible)
     }
 
-    return !sentConfirmationCode ? (
+    return(
         <View style={styles.container}>
             <Text style={styles.title}>Create an Account</Text>
 
@@ -157,28 +133,6 @@ export default function SignUpScreen(){
             <Button 
                 title="Continue" 
                 onPress={handleCreateAccount}
-            />
-        </View>
-    ) : (
-        <View style={styles.container}>
-            <Text style={styles.title}>
-                Check your email
-            </Text>
-            <Text style={styles.title}>
-                Enter the 6-digit verification code we sent to {email}.
-            </Text>
-
-            <TextInput  
-                value={code}
-                onChangeText={setCode}
-                keyboardType="numeric"
-                maxLength={6}
-                style={styles.input}
-            />
-
-            <Button 
-                title="Submit" 
-                onPress={handleConfirmSignUp}
             />
         </View>
     )

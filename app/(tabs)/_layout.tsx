@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -11,10 +11,11 @@ import awsCognitoConfig from "../../config/awsCognitoConfig.js";
 
 let cognitoConfigured = false;
 
-  if(!cognitoConfigured){
-    Amplify.configure(awsCognitoConfig);
-    cognitoConfigured = true; 
-  }
+if(!cognitoConfigured){
+  Amplify.configure(awsCognitoConfig);
+  cognitoConfigured = true; 
+}
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 

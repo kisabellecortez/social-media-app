@@ -10,22 +10,31 @@ import {
     Image
 } from "react-native";
 
-import {signIn} from "aws-amplify/auth"
+import {fetchUserAttributes, signIn} from "aws-amplify/auth"
+import { useRouter } from "expo-router";
 
 export default function SignInScreen(){
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+    const router = useRouter()
 
-    const [passwordVisible, setPasswordVisible] = useState(false)
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [passwordVisible, setPasswordVisible] = useState(true)
 
     const handleLogin = async() => {
         try{
             const result = await signIn({
-                username: username,
+                username: email,
                 password
             })
 
             console.log(result)
+
+            if(result.nextStep.signInStep === "CONFIRM_SIGN_UP"){
+                router.replace({pathname: "./confirmAccount", params: {email, password}})
+            }
+            else{
+                router.replace({pathname: "./userAccount", params: {email}})
+            }
         }
         catch(error){
             console.log(error)
@@ -42,8 +51,8 @@ export default function SignInScreen(){
 
             <TextInput
                 placeholder="Email"
-                value={username}
-                onChangeText={setUsername}
+                value={email}
+                onChangeText={setEmail}
                 style={styles.input}
                 autoCapitalize="none"
             />
